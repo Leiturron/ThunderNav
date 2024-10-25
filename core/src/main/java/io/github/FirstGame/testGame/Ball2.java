@@ -6,75 +6,54 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-
 public class Ball2 {
-	private int x;
-    private int y;
-    private int xSpeed;
-    private int ySpeed;
+    private float x;
+    private float y;
+    private float xSpeed; // Velocidad horizontal
     private Sprite spr;
+    private boolean movingRight = true; // Dirección del movimiento
 
-    public Ball2(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
-    	spr = new Sprite(tx);
-    	this.x = x; 
- 	
-        //validar que borde de esfera no quede fuera
-    	if (x-size < 0) this.x = x+size;
-    	if (x+size > Gdx.graphics.getWidth())this.x = x-size;
-         
+    public Ball2(float x, float y, int size, float xSpeed, Texture tx) {
+        spr = new Sprite(tx);
+        this.x = x;
         this.y = y;
-        //validar que borde de esfera no quede fuera
-    	if (y-size < 0) this.y = y+size;
-    	if (y+size > Gdx.graphics.getHeight())this.y = y-size;
-    	
-        spr.setPosition(x, y);
-        this.setXSpeed(xSpeed);
-        this.setySpeed(ySpeed);
-    }
-    public void update() {
-        x += getXSpeed();
-        y += getySpeed();
 
-        if (x+getXSpeed() < 0 || x+getXSpeed()+spr.getWidth() > Gdx.graphics.getWidth())
-        	setXSpeed(getXSpeed() * -1);
-        if (y+getySpeed() < 0 || y+getySpeed()+spr.getHeight() > Gdx.graphics.getHeight())
-        	setySpeed(getySpeed() * -1);
+        // Validar que borde de esfera no quede fuera
+        if (x - size < 0) this.x = size;
+        if (x + size > Gdx.graphics.getWidth()) this.x = Gdx.graphics.getWidth() - size;
+
+        spr.setPosition(x, y);
+        this.xSpeed = xSpeed;
+    }
+
+    public void update() {
+        // Mover horizontalmente
+        if (movingRight) {
+            x += xSpeed;
+            if (x + spr.getWidth() > Gdx.graphics.getWidth()) {
+                movingRight = false; // Cambiar dirección
+                y -= 10; // Baja la formación
+            }
+        } else {
+            x -= xSpeed;
+            if (x < 0) {
+                movingRight = true; // Cambiar dirección
+                y -= 10; // Baja la formación
+            }
+        }
+
         spr.setPosition(x, y);
     }
-    
+
     public Rectangle getArea() {
-    	return spr.getBoundingRectangle();
+        return spr.getBoundingRectangle();
     }
+
     public void draw(SpriteBatch batch) {
-    	spr.draw(batch);
+        spr.draw(batch);
     }
-    
-    public void checkCollision(Ball2 b2) {
-        if(spr.getBoundingRectangle().overlaps(b2.spr.getBoundingRectangle())){
-        	// rebote
-            if (getXSpeed() ==0) setXSpeed(getXSpeed() + b2.getXSpeed()/2);
-            if (b2.getXSpeed() ==0) b2.setXSpeed(b2.getXSpeed() + getXSpeed()/2);
-        	setXSpeed(- getXSpeed());
-            b2.setXSpeed(-b2.getXSpeed());
-            
-            if (getySpeed() ==0) setySpeed(getySpeed() + b2.getySpeed()/2);
-            if (b2.getySpeed() ==0) b2.setySpeed(b2.getySpeed() + getySpeed()/2);
-            setySpeed(- getySpeed());
-            b2.setySpeed(- b2.getySpeed()); 
-        }
+
+    public float getXSpeed() {
+        return xSpeed;
     }
-	public int getXSpeed() {
-		return xSpeed;
-	}
-	public void setXSpeed(int xSpeed) {
-		this.xSpeed = xSpeed;
-	}
-	public int getySpeed() {
-		return ySpeed;
-	}
-	public void setySpeed(int ySpeed) {
-		this.ySpeed = ySpeed;
-	}
-	
-    
 }
