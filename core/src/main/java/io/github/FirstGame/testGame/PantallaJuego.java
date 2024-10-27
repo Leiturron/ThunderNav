@@ -49,7 +49,7 @@ public class PantallaJuego implements Screen {
         gameMusic.play();
         
         nave = new Nave4(Gdx.graphics.getWidth()/2 - 50, 30,
-                new Texture(Gdx.files.internal("playerShipSmall.png")),
+                new Texture(Gdx.files.internal("playerShip_1.png")),
                 Gdx.audio.newSound(Gdx.files.internal("hurt.ogg")), 
                 new Texture(Gdx.files.internal("Rocket2.png")), 
                 Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3"))); 
@@ -69,7 +69,7 @@ public class PantallaJuego implements Screen {
                 float x = col * (size + espacioEntreBolas); // Espaciado horizontal
                 float y = Gdx.graphics.getHeight() - (fila * (size + espacioEntreBolas)) - (size * 3); // Espaciado vertical
                 Ball2 bb = new Ball2(x, y, size, velocidadConstante, 
-                                      new Texture(Gdx.files.internal("alienShipSmall.png")));
+                                      new Texture(Gdx.files.internal("alienShip_1.png")));
                 balls1.add(bb);
                 balls2.add(bb);
             }
