@@ -26,8 +26,10 @@ public class PantallaJuego implements Screen {
     
     private Nave4 nave;
     private ArrayList<Ball2> balls1 = new ArrayList<>();
-    private ArrayList<Ball2> balls2 = new ArrayList<>();
     private ArrayList<Bullet> balas = new ArrayList<>();
+
+    // Matriz de enemigos
+    private Ball2[][] asteroides;
 
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,  
             int velXAsteroides, int cantAsteroides) {
@@ -56,25 +58,27 @@ public class PantallaJuego implements Screen {
         nave.setVidas(vidas);
         
         Random r = new Random();
-     // Crear asteroides en formación
-     // Crear asteroides en formación
+        
+        // Definir tamaño de la matriz
         int columnas = 10; // Número de columnas
         int filas = 3; // Número de filas
-        int espacioEntreBolas = 50; // Espacio entre las bolas
-        int size = 20; // Tamaño de las bolas
-        float velocidadConstante = velXAsteroides + r.nextInt(4); // Velocidad constante para todas las bolas
+        asteroides = new Ball2[filas][columnas];
+        
+        int espacioEntreBolas = 20; // Espacio entre las bolas
+        int size = 50; // Tamaño de las bolas
+        int velocidadConstante = velXAsteroides + r.nextInt(4); // Velocidad constante para todas las bolas
 
+        // Crear enemigos en matriz
         for (int fila = 0; fila < filas; fila++) {
             for (int col = 0; col < columnas; col++) {
                 float x = col * (size + espacioEntreBolas); // Espaciado horizontal
                 float y = Gdx.graphics.getHeight() - (fila * (size + espacioEntreBolas)) - (size * 3); // Espaciado vertical
-                Ball2 bb = new Ball2(x, y, size, velocidadConstante, 
-                                      new Texture(Gdx.files.internal("alienShip_1.png")));
-                balls1.add(bb);
-                balls2.add(bb);
+                asteroides[fila][col] = new Ball2(x, y, velocidadConstante, 
+                                                    new Texture(Gdx.files.internal("alienShip_1.png")));
+                balls1.add(asteroides[fila][col]); // También agregar a balls1 para la lógica de colisión
             }
         }
-    }    
+    }  
 
     public void dibujaEncabezado() {
         CharSequence str = "Vidas: " + nave.getVidas() + " Ronda: " + ronda;
@@ -91,17 +95,19 @@ public class PantallaJuego implements Screen {
         dibujaEncabezado();
         
         if (!nave.estaHerido()) {
-            // Colisiones entre balas y asteroides y su destrucción  
+            // Colisiones entre balas y enemigos y su destrucción  
             for (int i = 0; i < balas.size(); i++) {
                 Bullet b = balas.get(i);
                 b.update();
-                for (int j = 0; j < balls1.size(); j++) {    
-                    if (b.checkCollision(balls1.get(j))) {          
-                        explosionSound.play();
-                        balls1.remove(j);
-                        j--;
-                        score += 10;
-                    } 
+                for (int fila = 0; fila < asteroides.length; fila++) {
+                    for (int col = 0; col < asteroides[fila].length; col++) {
+                        if (asteroides[fila][col] != null && b.checkCollision(asteroides[fila][col])) {          
+                            explosionSound.play();
+                            balls1.remove(asteroides[fila][col]);
+                            asteroides[fila][col] = null; // Marcar como destruido
+                            score += 10;
+                        } 
+                    }
                 }
                 
                 if (b.isDestroyed()) {
@@ -110,9 +116,13 @@ public class PantallaJuego implements Screen {
                 }
             }
             
-            // Actualizar movimiento de asteroides dentro del área
-            for (Ball2 ball : balls1) {
-                ball.update();
+            // Actualizar movimiento de enemigos dentro del área
+            for (int fila = 0; fila < asteroides.length; fila++) {
+                for (int col = 0; col < asteroides[fila].length; col++) {
+                    if (asteroides[fila][col] != null) {
+                        asteroides[fila][col].update();
+                    }
+                }
             }
         }
         
@@ -123,16 +133,19 @@ public class PantallaJuego implements Screen {
         
         nave.draw(batch, this);
         
-        // Dibujar asteroides y manejar colisión con nave
-        for (int i = 0; i < balls1.size(); i++) {
-            Ball2 b = balls1.get(i);
-            b.draw(batch);
-            // Perdió vida o game over
-            if (nave.checkCollision(b)) {
-                // Asteroide se destruye con el choque             
-                balls1.remove(i);
-                i--;
-            }   
+        // Dibujar enemigos y manejar colisión con nave
+        for (int fila = 0; fila < asteroides.length; fila++) {
+            for (int col = 0; col < asteroides[fila].length; col++) {
+                if (asteroides[fila][col] != null) {
+                    asteroides[fila][col].draw(batch, this); // Cambié aquí para usar el nuevo método draw
+                    // Perdió vida o game over
+                    if (nave.checkCollision(asteroides[fila][col])) {
+                        // Enemigo se destruye con el choque             
+                        balls1.remove(asteroides[fila][col]);
+                        asteroides[fila][col] = null; // Marcar como destruido
+                    }   
+                }
+            }
         }
         
         if (nave.estaDestruido()) {
