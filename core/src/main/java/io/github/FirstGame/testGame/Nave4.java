@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
-public class Nave4 extends SpaceObject{
+public class Nave4 extends SpaceObject implements Movible{
 
     private boolean destruida = false;
     private int vidas = 3;

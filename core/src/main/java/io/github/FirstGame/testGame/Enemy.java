@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-public abstract class Enemy extends SpaceObject {
+public abstract class Enemy extends SpaceObject implements Movible{
     protected Sprite spr;
     protected boolean movingRight = true; // Dirección del movimiento
 
