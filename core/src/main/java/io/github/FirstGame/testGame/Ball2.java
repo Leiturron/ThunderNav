@@ -35,6 +35,11 @@ public class Ball2 extends Enemy {
     public void draw(SpriteBatch batch, PantallaJuego juego) {
         super.draw(batch, juego); // Usar el método `draw` de la clase padre
     }
+
+	@Override
+	public float getXSpeed() {
+		return speed;
+	}
 }
 
 

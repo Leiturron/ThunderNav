@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -57,6 +58,10 @@ public class PantallaJuego implements Screen {
                 Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3"))); 
         nave.setVidas(vidas);
         
+        crearAsteroides();
+    }  
+
+    private void crearAsteroides() {
         Random r = new Random();
         
         // Definir tamaño de la matriz
@@ -72,13 +77,13 @@ public class PantallaJuego implements Screen {
         for (int fila = 0; fila < filas; fila++) {
             for (int col = 0; col < columnas; col++) {
                 float x = col * (size + espacioEntreBolas); // Espaciado horizontal
-                float y = Gdx.graphics.getHeight() - (fila * (size + espacioEntreBolas)) - (size * 3); // Espaciado vertical
+                float y = Gdx.graphics.getHeight() - (fila * (size + espacioEntreBolas)) - size; // Espaciado vertical
                 asteroides[fila][col] = new Ball2(x, y, velocidadConstante, 
                                                     new Texture(Gdx.files.internal("alienShip_1.png")));
                 balls1.add(asteroides[fila][col]); // También agregar a balls1 para la lógica de colisión
             }
         }
-    }  
+    }
 
     public void dibujaEncabezado() {
         CharSequence str = "Vidas: " + nave.getVidas() + " Ronda: " + ronda;
@@ -182,13 +187,65 @@ public class PantallaJuego implements Screen {
     public void resize(int width, int height) {}
 
     @Override
-    public void pause() {}
+    public void pause() {
+        Preferences prefs = Gdx.app.getPreferences("GameState");
+        prefs.putInteger("score", score);
+        prefs.putInteger("ronda", ronda);
+        prefs.putInteger("vidas", nave.getVidas());
+        prefs.putInteger("cantAsteroides", cantAsteroides);
+        prefs.putFloat("velXAsteroides", velXAsteroides);
+        prefs.putInteger("asteroidesCount", balls1.size());
+        
+        // Guardar el estado de cada asteroide
+        for (int i = 0; i < balls1.size(); i++) {
+            Ball2 asteroide = balls1.get(i);
+            prefs.putFloat("asteroide_" + i + "_x", asteroide.getX());
+            prefs.putFloat("asteroide_" + i + "_y", asteroide.getY());
+            prefs.putFloat("asteroide_" + i + "_velX", asteroide.getXSpeed());
+        }
+        prefs.flush(); // Guarda los cambios
+    }
 
     @Override
-    public void resume() {}
-
-    @Override
-    public void hide() {}
+    public void resume() {
+        Preferences prefs = Gdx.app.getPreferences("GameState");
+        score = prefs.getInteger("score", 0); // valor por defecto
+        ronda = prefs.getInteger("ronda", 1); // valor por defecto
+        nave.setVidas(prefs.getInteger("vidas", 3)); // valor por defecto
+        cantAsteroides = prefs.getInteger("cantAsteroides", 10); // valor por defecto
+        velXAsteroides = (int) prefs.getFloat("velXAsteroides", 5); // valor por defecto
+        
+        // Recrear asteroides
+        int asteroidesCount = prefs.getInteger("asteroidesCount", 0);
+        balls1.clear();
+        for (int i = 0; i < asteroidesCount; i++) {
+            float x = prefs.getFloat("asteroide_" + i + "_x", 0);
+            float y = prefs.getFloat("asteroide_" + i + "_y", 0);
+            float velX = prefs.getFloat("asteroide_" + i + "_velX", velXAsteroides);
+            Ball2 asteroide = new Ball2(x, y, velX, new Texture(Gdx.files.internal("alienShip_1.png")));
+            balls1.add(asteroide);
+        }
+        
+        // Re-creamos la matriz de asteroides
+        int filas = 3;
+        int columnas = 10;
+        asteroides = new Ball2[filas][columnas];
+        int index = 0;
+        for (int fila = 0; fila < filas; fila++) {
+            for (int col = 0; col < columnas; col++) {
+                if (index < balls1.size()) {
+                    asteroides[fila][col] = balls1.get(index++);
+                } else {
+                    asteroides[fila][col] = null; // No hay más asteroides
+                }
+            }
+        }
+        
+        gameMusic.play();
+    }
+    
+	@Override
+	public void hide() {}
 
     @Override
     public void dispose() {

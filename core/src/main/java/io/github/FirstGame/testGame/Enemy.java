@@ -45,6 +45,8 @@ public abstract class Enemy extends SpaceObject {
     public float getY() {
         return y;
     }
+    
+	public abstract float getXSpeed();
 }
 
 
