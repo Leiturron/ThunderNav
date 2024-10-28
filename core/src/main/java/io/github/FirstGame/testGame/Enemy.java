@@ -16,8 +16,8 @@ public abstract class Enemy extends SpaceObject {
         spr = new Sprite(tx);
 
         // Validar que el borde del enemigo no quede fuera
-        if (x < 0) this.x = 0;
-        if (x + spr.getWidth() > Gdx.graphics.getWidth()) this.x = Gdx.graphics.getWidth() - spr.getWidth();
+        if (x < 20) this.x = 20;
+        if (x + spr.getWidth() > 680) this.x = 680 - spr.getWidth();
 
         spr.setPosition(x, y);
     }

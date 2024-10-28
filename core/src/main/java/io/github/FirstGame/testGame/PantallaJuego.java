@@ -14,7 +14,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PantallaJuego implements Screen {
-
+	
+	
     private SpaceNavigation game;
     private OrthographicCamera camera;    
     private SpriteBatch batch;
@@ -24,6 +25,8 @@ public class PantallaJuego implements Screen {
     private int ronda;
     private int velXAsteroides; 
     private int cantAsteroides;
+    
+    private Texture gameFondo;
     
     private Nave4 nave;
     private ArrayList<Ball2> balls1 = new ArrayList<>();
@@ -40,9 +43,13 @@ public class PantallaJuego implements Screen {
         this.velXAsteroides = velXAsteroides;
         this.cantAsteroides = cantAsteroides;
         
+        
+        
         batch = game.getBatch();
         camera = new OrthographicCamera();    
         camera.setToOrtho(false, 800, 640);
+        
+        gameFondo = new Texture(Gdx.files.internal("GameFondo.png"));
         
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
         explosionSound.setVolume(1, 0.5f);
@@ -51,7 +58,7 @@ public class PantallaJuego implements Screen {
         gameMusic.setVolume(0.5f);
         gameMusic.play();
         
-        nave = new Nave4(Gdx.graphics.getWidth()/2 - 50, 30,
+        nave = new Nave4(740/2 - 50, 30,
                 new Texture(Gdx.files.internal("playerShip_1.png")),
                 Gdx.audio.newSound(Gdx.files.internal("hurt.ogg")), 
                 new Texture(Gdx.files.internal("Rocket2.png")), 
@@ -62,7 +69,6 @@ public class PantallaJuego implements Screen {
     }  
 
     private void crearAsteroides() {
-        Random r = new Random();
         
         // Definir tamaño de la matriz
         int columnas = 10; // Número de columnas
@@ -71,13 +77,13 @@ public class PantallaJuego implements Screen {
         
         int espacioEntreBolas = 20; // Espacio entre las bolas
         int size = 50; // Tamaño de las bolas
-        int velocidadConstante = velXAsteroides + r.nextInt(4); // Velocidad constante para todas las bolas
+        int velocidadConstante = velXAsteroides; // Velocidad constante para todas las bolas
 
         // Crear enemigos en matriz
         for (int fila = 0; fila < filas; fila++) {
             for (int col = 0; col < columnas; col++) {
                 float x = col * (size + espacioEntreBolas); // Espaciado horizontal
-                float y = Gdx.graphics.getHeight() - (fila * (size + espacioEntreBolas)) - size; // Espaciado vertical
+                float y = Gdx.graphics.getHeight() - (fila * (size + espacioEntreBolas)) - size - 20; // Espaciado vertical
                 asteroides[fila][col] = new Ball2(x, y, velocidadConstante, 
                                                     new Texture(Gdx.files.internal("alienShip_1.png")));
                 balls1.add(asteroides[fila][col]); // También agregar a balls1 para la lógica de colisión
@@ -88,15 +94,17 @@ public class PantallaJuego implements Screen {
     public void dibujaEncabezado() {
         CharSequence str = "Vidas: " + nave.getVidas() + " Ronda: " + ronda;
         game.getFont().getData().setScale(2f);        
-        game.getFont().draw(batch, str, 10, 30);
-        game.getFont().draw(batch, "Score:" + this.score, Gdx.graphics.getWidth() - 150, 30);
-        game.getFont().draw(batch, "HighScore:" + game.getHighScore(), Gdx.graphics.getWidth() / 2 - 100, 30);
+        game.getFont().draw(batch, "" + this.score, 910, 800 - 76);
+        game.getFont().draw(batch, "" + game.getHighScore(), 910, 800 - 41);
+        game.getFont().draw(batch, "" + nave.getVidas(), 860, 800 - 280);
+        game.getFont().draw(batch, "" + ronda, 860, 800 - 315);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
+        batch.draw(gameFondo, 0, 0, 1200, 800);
         dibujaEncabezado();
         
         if (!nave.estaHerido()) {

@@ -18,13 +18,13 @@ public class Ball2 extends Enemy {
         x += movingRight ? speed : -speed; // Usar `speed` en lugar de `xSpeed`
 
         // Comprobar rebote en los bordes
-        if (x + spr.getWidth() > Gdx.graphics.getWidth() || x < 0) {
+        if (x + spr.getWidth() > 680 || x < 20) {
             movingRight = !movingRight; // Cambiar dirección
             // Bajar toda la formación al cambiar de dirección
             y -= spr.getHeight(); // Usar la altura del sprite para bajar
             // Asegurarse de que no baje demasiado
-            if (y < 0) {
-                y = 0; // Limitar la posición en y
+            if (y < 20) {
+                y = 20; // Limitar la posición en y
             }
         }
 

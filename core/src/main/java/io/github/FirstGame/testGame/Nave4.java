@@ -37,10 +37,10 @@ public class Nave4 extends SpaceObject{
             move();
 
             // Asegúrate de que la nave se mantenga dentro de los bordes de la pantalla
-            if (spr.getX() < 0) {
-                spr.setX(0); // Límite izquierdo
-            } else if (spr.getX() + spr.getWidth() > Gdx.graphics.getWidth()) {
-                spr.setX(Gdx.graphics.getWidth() - spr.getWidth()); // Límite derecho
+            if (spr.getX() < 20) {
+                spr.setX(20); // Límite izquierdo
+            } else if (spr.getX() + spr.getWidth() > 700) {
+                spr.setX(700 - spr.getWidth()); // Límite derecho
             }
 
             spr.draw(batch);
