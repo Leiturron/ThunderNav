@@ -22,7 +22,7 @@ public abstract class Enemy extends SpaceObject implements Movible{
         spr.setPosition(x, y);
     }
 
-    public abstract void update(); // Método abstracto que debe ser implementado en las subclases
+    public abstract void update(PantallaJuego juego); // Método abstracto que debe ser implementado en las subclases
 
     public Rectangle getArea() {
         return spr.getBoundingRectangle();

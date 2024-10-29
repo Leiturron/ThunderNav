@@ -7,12 +7,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class Nave4 extends SpaceObject implements Movible, Shootable{
 
 	private boolean destruida = false;
     private int vidas = 3;
-    private float speed = 5; // Velocidad de movimiento
+    private float speed; // Velocidad de movimiento
     private Sprite spr;
     private Sound sonidoHerido;
     private Sound soundBala;
@@ -58,6 +60,8 @@ public class Nave4 extends SpaceObject implements Movible, Shootable{
 
     // Método para manejar el movimiento con teclado
     public void move() {
+    	if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) speed = 1;
+    	else speed = 5;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             spr.setX(spr.getX() - speed); // Mueve a la izquierda
         }
@@ -77,6 +81,21 @@ public class Nave4 extends SpaceObject implements Movible, Shootable{
     }
 
     public boolean checkCollision(Ball2 b) {
+        if (!herido && b.getArea().overlaps(spr.getBoundingRectangle())) {
+            // Lógica de colisión
+            // (Se mantiene tu lógica de colisión aquí)
+            vidas--;
+            herido = true;
+            tiempoHerido = tiempoHeridoMax;
+            sonidoHerido.play();
+            if (vidas <= 0)
+                destruida = true;
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean checkCollision(Bullet b) {
         if (!herido && b.getArea().overlaps(spr.getBoundingRectangle())) {
             // Lógica de colisión
             // (Se mantiene tu lógica de colisión aquí)
@@ -113,6 +132,10 @@ public class Nave4 extends SpaceObject implements Movible, Shootable{
 
     public void setVidas(int vidas2) {
         vidas = vidas2;
+    }
+    
+    public Rectangle getArea() {
+        return spr.getBoundingRectangle();
     }
 }
 

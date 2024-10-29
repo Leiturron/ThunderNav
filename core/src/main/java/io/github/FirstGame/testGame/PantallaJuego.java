@@ -29,6 +29,7 @@ public class PantallaJuego implements Screen {
     private Nave4 nave;
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Bullet> balas = new ArrayList<>();
+    private ArrayList<Bullet> balasEnemy = new ArrayList<>();
 
     // Matriz de enemigos
     private Ball2[][] asteroides;
@@ -85,6 +86,7 @@ public class PantallaJuego implements Screen {
                 asteroides[fila][col] = new Ball2(x, y, velocidadConstante, 
                                                     new Texture(Gdx.files.internal("alienShip_1.png")));
                 enemies.add(asteroides[fila][col]); // También agregar a balls1 para la lógica de colisión
+                
             }
         }
     }
@@ -104,7 +106,17 @@ public class PantallaJuego implements Screen {
         batch.draw(gameFondo, 0, 0, 1200, 800);
         dibujaEncabezado();
         
+        
         if (!nave.estaHerido()) {
+            // Actualizar movimiento de enemigos dentro del área
+            for (int fila = 0; fila < asteroides.length; fila++) {
+                for (int col = 0; col < asteroides[fila].length; col++) {
+                    if (asteroides[fila][col] != null) {
+                        asteroides[fila][col].update(this);
+                    }
+                }
+            }
+            
             // Colisiones entre balas y enemigos y su destrucción  
             for (int i = 0; i < balas.size(); i++) {
                 Bullet b = balas.get(i);
@@ -125,13 +137,14 @@ public class PantallaJuego implements Screen {
                     i--; // Para no saltarse uno tras eliminar del ArrayList
                 }
             }
-            
-            // Actualizar movimiento de enemigos dentro del área
-            for (int fila = 0; fila < asteroides.length; fila++) {
-                for (int col = 0; col < asteroides[fila].length; col++) {
-                    if (asteroides[fila][col] != null) {
-                        asteroides[fila][col].update();
-                    }
+            for (int i = 0; i < balasEnemy.size(); i++) {
+            	Bullet b = balasEnemy.get(i);
+            	b.update2();
+            	b.checkCollision(nave);
+            	nave.checkCollision(b);
+            	if (b.isDestroyed()) {
+                    balasEnemy.remove(i);
+                    i--; // Para no saltarse uno tras eliminar del ArrayList
                 }
             }
         }
@@ -139,6 +152,10 @@ public class PantallaJuego implements Screen {
         // Dibujar balas
         for (Bullet b : balas) {       
             b.draw(batch);
+        }
+        
+        for (Bullet b : balasEnemy) {
+            b.draw2(batch);
         }
         
         nave.draw(batch, this);
@@ -181,6 +198,10 @@ public class PantallaJuego implements Screen {
     
     public boolean agregarBala(Bullet bb) {
         return balas.add(bb);
+    }
+    
+    public boolean agregarBalaEnemy(Bullet bb) {
+    	return balasEnemy.add(bb);
     }
 
     @Override

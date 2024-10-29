@@ -2,7 +2,7 @@ package io.github.FirstGame.testGame;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public abstract class SpaceObject {
+public abstract class SpaceObject{
     protected float x, y; // Posición
     protected float speed; // Velocidad
 
