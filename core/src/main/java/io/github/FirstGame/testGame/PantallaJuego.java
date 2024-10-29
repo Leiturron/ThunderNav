@@ -1,7 +1,6 @@
 package io.github.FirstGame.testGame;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PantallaJuego implements Screen {
-	
 	
     private SpaceNavigation game;
     private OrthographicCamera camera;    
@@ -29,7 +27,7 @@ public class PantallaJuego implements Screen {
     private Texture gameFondo;
     
     private Nave4 nave;
-    private ArrayList<Ball2> balls1 = new ArrayList<>();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Bullet> balas = new ArrayList<>();
 
     // Matriz de enemigos
@@ -86,13 +84,12 @@ public class PantallaJuego implements Screen {
                 float y = Gdx.graphics.getHeight() - (fila * (size + espacioEntreBolas)) - size - 20; // Espaciado vertical
                 asteroides[fila][col] = new Ball2(x, y, velocidadConstante, 
                                                     new Texture(Gdx.files.internal("alienShip_1.png")));
-                balls1.add(asteroides[fila][col]); // También agregar a balls1 para la lógica de colisión
+                enemies.add(asteroides[fila][col]); // También agregar a balls1 para la lógica de colisión
             }
         }
     }
 
     public void dibujaEncabezado() {
-        CharSequence str = "Vidas: " + nave.getVidas() + " Ronda: " + ronda;
         game.getFont().getData().setScale(2f);        
         game.getFont().draw(batch, "" + this.score, 910, 800 - 76);
         game.getFont().draw(batch, "" + game.getHighScore(), 910, 800 - 41);
@@ -116,7 +113,7 @@ public class PantallaJuego implements Screen {
                     for (int col = 0; col < asteroides[fila].length; col++) {
                         if (asteroides[fila][col] != null && b.checkCollision(asteroides[fila][col])) {          
                             explosionSound.play();
-                            balls1.remove(asteroides[fila][col]);
+                            enemies.remove(asteroides[fila][col]);
                             asteroides[fila][col] = null; // Marcar como destruido
                             score += 10;
                         } 
@@ -154,7 +151,7 @@ public class PantallaJuego implements Screen {
                     // Perdió vida o game over
                     if (nave.checkCollision(asteroides[fila][col])) {
                         // Enemigo se destruye con el choque             
-                        balls1.remove(asteroides[fila][col]);
+                        enemies.remove(asteroides[fila][col]);
                         asteroides[fila][col] = null; // Marcar como destruido
                     }   
                 }
@@ -173,7 +170,7 @@ public class PantallaJuego implements Screen {
         batch.end();
         
         // Nivel completado
-        if (balls1.size() == 0) {
+        if (enemies.size() == 0) {
             Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), score, 
                     velXAsteroides + 3, cantAsteroides + 10);
             ss.resize(1200, 800);
@@ -202,11 +199,11 @@ public class PantallaJuego implements Screen {
         prefs.putInteger("vidas", nave.getVidas());
         prefs.putInteger("cantAsteroides", cantAsteroides);
         prefs.putFloat("velXAsteroides", velXAsteroides);
-        prefs.putInteger("asteroidesCount", balls1.size());
+        prefs.putInteger("asteroidesCount", enemies.size());
         
         // Guardar el estado de cada asteroide
-        for (int i = 0; i < balls1.size(); i++) {
-            Ball2 asteroide = balls1.get(i);
+        for (int i = 0; i < enemies.size(); i++) {
+            Ball2 asteroide = (Ball2) enemies.get(i);
             prefs.putFloat("asteroide_" + i + "_x", asteroide.getX());
             prefs.putFloat("asteroide_" + i + "_y", asteroide.getY());
             prefs.putFloat("asteroide_" + i + "_velX", asteroide.getXSpeed());
@@ -225,13 +222,13 @@ public class PantallaJuego implements Screen {
         
         // Recrear asteroides
         int asteroidesCount = prefs.getInteger("asteroidesCount", 0);
-        balls1.clear();
+        enemies.clear();
         for (int i = 0; i < asteroidesCount; i++) {
             float x = prefs.getFloat("asteroide_" + i + "_x", 0);
             float y = prefs.getFloat("asteroide_" + i + "_y", 0);
             float velX = prefs.getFloat("asteroide_" + i + "_velX", velXAsteroides);
             Ball2 asteroide = new Ball2(x, y, velX, new Texture(Gdx.files.internal("alienShip_1.png")));
-            balls1.add(asteroide);
+            enemies.add(asteroide);
         }
         
         // Re-creamos la matriz de asteroides
@@ -241,8 +238,8 @@ public class PantallaJuego implements Screen {
         int index = 0;
         for (int fila = 0; fila < filas; fila++) {
             for (int col = 0; col < columnas; col++) {
-                if (index < balls1.size()) {
-                    asteroides[fila][col] = balls1.get(index++);
+                if (index < enemies.size()) {
+                    asteroides[fila][col] = (Ball2) enemies.get(index++);
                 } else {
                     asteroides[fila][col] = null; // No hay más asteroides
                 }
