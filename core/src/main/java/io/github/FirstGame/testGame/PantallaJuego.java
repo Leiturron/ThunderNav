@@ -78,7 +78,7 @@ public class PantallaJuego implements Screen {
         int espacioEntreBolas = 20; // Espacio entre las bolas
         int size = 50; // Tamaño de las bolas
         int velocidadConstante = velXAsteroides; // Velocidad constante para todas las bolas
-
+ 
         // Crear enemigos en matriz
         for (int fila = 0; fila < filas; fila++) {
             for (int col = 0; col < columnas; col++) {

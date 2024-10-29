@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
-public class Nave4 extends SpaceObject implements Movible{
+public class Nave4 extends SpaceObject implements Movible, Shootable{
 
-    private boolean destruida = false;
+	private boolean destruida = false;
     private int vidas = 3;
     private float speed = 5; // Velocidad de movimiento
     private Sprite spr;
@@ -67,7 +67,8 @@ public class Nave4 extends SpaceObject implements Movible{
     }
 
     // Método para disparar
-    public void shoot(PantallaJuego juego) {
+    @Override
+    public void shoot(PantallaJuego juego) { // Asegúrate de que la firma coincida
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             Bullet bala = new Bullet(spr.getX() + spr.getWidth() / 2 - 5, spr.getY() + spr.getHeight() - 5, 0, 3, txBala);
             juego.agregarBala(bala);
