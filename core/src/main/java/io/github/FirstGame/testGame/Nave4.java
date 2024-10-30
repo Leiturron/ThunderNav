@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.TimeUtils;
 
-public class Nave4 extends SpaceObject implements Movible, Shootable{
+public class Nave4 extends SpaceObject implements Shootable{
 
 	private boolean destruida = false;
     private int vidas = 3;

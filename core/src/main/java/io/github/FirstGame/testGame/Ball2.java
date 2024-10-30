@@ -1,10 +1,8 @@
 package io.github.FirstGame.testGame;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Gdx; 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 
 public class Ball2 extends Enemy implements Shootable{
 	private Texture txBalaEnemy;

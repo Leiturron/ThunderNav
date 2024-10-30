@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 
 
 public class SpaceNavigation extends Game {
-	private String nombreJuego = "Space Navigation";
+	private String nombreJuego = "Thunder Ship";
 	private SpriteBatch batch;
 	private BitmapFont font;
 	private FreeTypeFontGenerator generator;

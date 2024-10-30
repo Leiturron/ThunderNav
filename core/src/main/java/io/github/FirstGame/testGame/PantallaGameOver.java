@@ -25,24 +25,32 @@ public class PantallaGameOver implements Screen {
         camera.update();
         game.getBatch().setProjectionMatrix(camera.combined);
 
-        game.getBatch().begin();
+        drawMensaje();
+
+        if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+            reset();
+        }
+    }
+    
+    public void drawMensaje() {
+    	game.getBatch().begin();
         game.getFont().draw(game.getBatch(), "Game Over !!!", 120, 400, 400, 1, true);
         game.getFont().draw(game.getBatch(), "Pincha en cualquier lado para reiniciar ...", 100, 300);
         game.getBatch().end();
+    }
+    
+    public void reset() {
+    	// Ajustar los parámetros de la nueva pantalla de juego según lo que necesites
+        int ronda = 1;
+        int vidas = 3;
+        int score = 0;
+        int velXAsteroides = 1;
+        int cantAsteroides = 10;
 
-        if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-            // Ajustar los parámetros de la nueva pantalla de juego según lo que necesites
-            int ronda = 1;
-            int vidas = 3;
-            int score = 0;
-            int velXAsteroides = 1;
-            int cantAsteroides = 10;
-
-            Screen ss = new PantallaJuego(game, ronda, vidas, score, velXAsteroides, cantAsteroides);
-            ss.resize(1200, 800);
-            game.setScreen(ss);
-            dispose();
-        }
+        Screen ss = new PantallaJuego(game, ronda, vidas, score, velXAsteroides, cantAsteroides);
+        ss.resize(1200, 800);
+        game.setScreen(ss);
+        dispose();
     }
 
     @Override

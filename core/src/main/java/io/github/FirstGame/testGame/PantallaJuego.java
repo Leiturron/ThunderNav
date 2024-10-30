@@ -108,91 +108,26 @@ public class PantallaJuego implements Screen {
         
         
         if (!nave.estaHerido()) {
-            // Actualizar movimiento de enemigos dentro del área
-            for (int fila = 0; fila < asteroides.length; fila++) {
-                for (int col = 0; col < asteroides[fila].length; col++) {
-                    if (asteroides[fila][col] != null) {
-                        asteroides[fila][col].update(this);
-                    }
-                }
-            }
-            
-            // Colisiones entre balas y enemigos y su destrucción  
-            for (int i = 0; i < balas.size(); i++) {
-                Bullet b = balas.get(i);
-                b.update();
-                for (int fila = 0; fila < asteroides.length; fila++) {
-                    for (int col = 0; col < asteroides[fila].length; col++) {
-                        if (asteroides[fila][col] != null && b.checkCollision(asteroides[fila][col])) {          
-                            explosionSound.play();
-                            enemies.remove(asteroides[fila][col]);
-                            asteroides[fila][col] = null; // Marcar como destruido
-                            score += 10;
-                        } 
-                    }
-                }
-                
-                if (b.isDestroyed()) {
-                    balas.remove(i);
-                    i--; // Para no saltarse uno tras eliminar del ArrayList
-                }
-            }
-            for (int i = 0; i < balasEnemy.size(); i++) {
-            	Bullet b = balasEnemy.get(i);
-            	b.update2();
-            	b.checkCollision(nave);
-            	nave.checkCollision(b);
-            	if (b.isDestroyed()) {
-                    balasEnemy.remove(i);
-                    i--; // Para no saltarse uno tras eliminar del ArrayList
-                }
-            }
+            actualizarMovEnemy();
+            checkColisionMiBalaConEnemy();
+            checkColisionEnemyBalaConNave();
         }
         
-        // Dibujar balas
-        for (Bullet b : balas) {       
-            b.draw(batch);
-        }
+        drawBalas();
+        drawNave();
         
-        for (Bullet b : balasEnemy) {
-            b.draw2(batch);
-        }
+        drawEnemyAndCheckColision();
         
-        nave.draw(batch, this);
-        
-        // Dibujar enemigos y manejar colisión con nave
-        for (int fila = 0; fila < asteroides.length; fila++) {
-            for (int col = 0; col < asteroides[fila].length; col++) {
-                if (asteroides[fila][col] != null) {
-                    asteroides[fila][col].draw(batch, this); // Cambié aquí para usar el nuevo método draw
-                    // Perdió vida o game over
-                    if (nave.checkCollision(asteroides[fila][col])) {
-                        // Enemigo se destruye con el choque             
-                        enemies.remove(asteroides[fila][col]);
-                        asteroides[fila][col] = null; // Marcar como destruido
-                    }   
-                }
-            }
-        }
         
         if (nave.estaDestruido()) {
-            if (score > game.getHighScore())
-                game.setHighScore(score);
-            Screen ss = new PantallaGameOver(game);
-            ss.resize(1200, 800);
-            game.setScreen(ss);
-            dispose();
+            callGameOver();
         }
         
         batch.end();
         
         // Nivel completado
         if (enemies.size() == 0) {
-            Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), score, 
-                    velXAsteroides + 3, cantAsteroides + 10);
-            ss.resize(1200, 800);
-            game.setScreen(ss);
-            dispose();
+            nextLevel();
         }
     }
     
@@ -230,6 +165,103 @@ public class PantallaJuego implements Screen {
             prefs.putFloat("asteroide_" + i + "_velX", asteroide.getXSpeed());
         }
         prefs.flush(); // Guarda los cambios
+    }
+    
+    public void actualizarMovEnemy() {
+    	// Actualizar movimiento de enemigos dentro del área
+        for (int fila = 0; fila < asteroides.length; fila++) {
+            for (int col = 0; col < asteroides[fila].length; col++) {
+                if (asteroides[fila][col] != null) {
+                    asteroides[fila][col].update(this);
+                }
+            }
+        }
+    }
+    
+    public void checkColisionMiBalaConEnemy() {
+    	// Colisiones entre balas y enemigos y su destrucción  
+        for (int i = 0; i < balas.size(); i++) {
+            Bullet b = balas.get(i);
+            b.update();
+            for (int fila = 0; fila < asteroides.length; fila++) {
+                for (int col = 0; col < asteroides[fila].length; col++) {
+                    if (asteroides[fila][col] != null && b.checkCollision(asteroides[fila][col])) {          
+                        explosionSound.play();
+                        enemies.remove(asteroides[fila][col]);
+                        asteroides[fila][col] = null; // Marcar como destruido
+                        score += 10;
+                    } 
+                }
+            }
+            
+            if (b.isDestroyed()) {
+                balas.remove(i);
+                i--; // Para no saltarse uno tras eliminar del ArrayList
+            }
+        }
+    }
+    
+    public void checkColisionEnemyBalaConNave() {
+    	for (int i = 0; i < balasEnemy.size(); i++) {
+        	Bullet b = balasEnemy.get(i);
+        	b.update2();
+        	b.checkCollision(nave);
+        	nave.checkCollision(b);
+        	if (b.isDestroyed()) {
+                balasEnemy.remove(i);
+                i--; // Para no saltarse uno tras eliminar del ArrayList
+            }
+        }
+    }
+    
+    public void drawBalas() {
+    	// Dibujar balas
+        for (Bullet b : balas) {       
+            b.draw(batch);
+        }
+        
+        // Dibujar balas de enemigos
+        for (Bullet b : balasEnemy) {
+            b.draw2(batch);
+        }
+    }
+    
+    public void drawNave() {
+    	nave.draw(batch, this);
+    }
+    
+    public void drawEnemyAndCheckColision() {
+    	// Dibujar enemigos y manejar colisión con nave
+        for (int fila = 0; fila < asteroides.length; fila++) {
+            for (int col = 0; col < asteroides[fila].length; col++) {
+                if (asteroides[fila][col] != null) {
+                    asteroides[fila][col].draw(batch, this); // Cambié aquí para usar el nuevo método draw
+                    // Perdió vida o game over
+                    if (nave.checkCollision(asteroides[fila][col])) {
+                        // Enemigo se destruye con el choque             
+                        enemies.remove(asteroides[fila][col]);
+                        asteroides[fila][col] = null; // Marcar como destruido
+                    }   
+                }
+            }
+        }
+    }
+    
+    public void callGameOver() {
+    	if (score > game.getHighScore())
+            game.setHighScore(score);
+        Screen ss = new PantallaGameOver(game);
+        ss.resize(1200, 800);
+        game.setScreen(ss);
+        dispose();
+    }
+    
+    public void nextLevel() {
+    	Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), score, 
+                velXAsteroides + 3, cantAsteroides + 10);
+        ss.resize(1200, 800);
+        game.setScreen(ss);
+        dispose();
     }
 
     @Override
