@@ -34,9 +34,8 @@ public class PantallaJuego implements Screen {
     // Matriz de enemigos
     private Ball2[][] asteroides;
 
-    public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,  
-            int velXAsteroides, int cantAsteroides) {
-        this.game = game;
+    public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score, int velXAsteroides, int cantAsteroides) {
+        this.game = SpaceNavigation.getInstance();
         this.ronda = ronda;
         this.score = score;
         this.velXAsteroides = velXAsteroides;
@@ -248,19 +247,19 @@ public class PantallaJuego implements Screen {
     }
     
     public void callGameOver() {
-    	if (score > game.getHighScore())
-            game.setHighScore(score);
-        Screen ss = new PantallaGameOver(game);
+    	if (score > SpaceNavigation.getInstance().getHighScore())
+            SpaceNavigation.getInstance().setHighScore(score);
+        Screen ss = new PantallaGameOver(SpaceNavigation.getInstance());
         ss.resize(1200, 800);
-        game.setScreen(ss);
+        SpaceNavigation.getInstance().setScreen(ss);
         dispose();
     }
     
     public void nextLevel() {
-    	Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), score, 
+    	Screen ss = new PantallaJuego(SpaceNavigation.getInstance(), ronda + 1, nave.getVidas(), score, 
                 velXAsteroides + 3, cantAsteroides + 10);
         ss.resize(1200, 800);
-        game.setScreen(ss);
+        SpaceNavigation.getInstance().setScreen(ss);
         dispose();
     }
 

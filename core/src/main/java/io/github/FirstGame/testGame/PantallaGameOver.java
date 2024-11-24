@@ -8,11 +8,11 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class PantallaGameOver implements Screen {
 
-    private SpaceNavigation game;
+	private SpaceNavigation game;
     private OrthographicCamera camera;
 
     public PantallaGameOver(SpaceNavigation game) {
-        this.game = game;
+        this.game = SpaceNavigation.getInstance();
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1200, 800);
@@ -23,7 +23,7 @@ public class PantallaGameOver implements Screen {
         ScreenUtils.clear(0, 0, 0, 1);
 
         camera.update();
-        game.getBatch().setProjectionMatrix(camera.combined);
+        game.getBatch().setProjectionMatrix(camera	.combined);
 
         drawMensaje();
 

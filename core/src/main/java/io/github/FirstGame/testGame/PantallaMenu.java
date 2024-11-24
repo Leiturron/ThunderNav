@@ -28,8 +28,8 @@ public class PantallaMenu implements Screen {
     private Texture fondo;
 
     public PantallaMenu(SpaceNavigation game) {
-        this.game = game;
-        
+        this.game = SpaceNavigation.getInstance();
+                
         stage = new Stage();
         this.fondo = new Texture(Gdx.files.internal("menu.png"));
         this.batch = new SpriteBatch();

@@ -8,52 +8,64 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
-
-
-
 public class SpaceNavigation extends Game {
-	private String nombreJuego = "Thunder Ship";
-	private SpriteBatch batch;
-	private BitmapFont font;
-	private FreeTypeFontGenerator generator;
-	private int highScore;	
 
-	public void create() {
-		highScore = 0;
-		batch = new SpriteBatch();
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("vwFont.ttf"));
-		FreeTypeFontParameter parametro = new FreeTypeFontParameter();
-		parametro.size = 15;
-		font = generator.generateFont(parametro);
-		Screen ss = new PantallaMenu(this);
-		this.setScreen(ss);
-	}
+    // Instancia única para el patrón Singleton.
+    private static SpaceNavigation instance;
 
-	public void render() {
-		super.render(); // important!
-	}
+    private String nombreJuego = "Thunder Ship";
+    private SpriteBatch batch;
+    private BitmapFont font;
+    private FreeTypeFontGenerator generator;
+    private int highScore;
 
-	public void dispose() {
-		batch.dispose();
-		font.dispose();
-	}
+    // Constructor privado para evitar instanciación directa.
+    private SpaceNavigation() {}
 
-	public SpriteBatch getBatch() {
-		return batch;
-	}
+    // Método público y estático para obtener la instancia única.
+    public static SpaceNavigation getInstance() {
+        if (instance == null) {
+            instance = new SpaceNavigation();
+        }
+        return instance;
+    }
 
-	public BitmapFont getFont() {
-		return font;
-	}
+    @Override
+    public void create() {
+        highScore = 0;
+        batch = new SpriteBatch();
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("vwFont.ttf"));
+        FreeTypeFontParameter parametro = new FreeTypeFontParameter();
+        parametro.size = 15;
+        font = generator.generateFont(parametro);
+        Screen ss = new PantallaMenu(this); // Usa "this" ya que la clase sigue siendo un Game.
+        this.setScreen(ss);
+    }
 
-	public int getHighScore() {
-		return highScore;
-	}
+    @Override
+    public void render() {
+        super.render(); // important!
+    }
 
-	public void setHighScore(int highScore) {
-		this.highScore = highScore;
-	}
-	
-	
+    @Override
+    public void dispose() {
+        batch.dispose();
+        font.dispose();
+    }
 
+    public SpriteBatch getBatch() {
+        return batch;
+    }
+
+    public BitmapFont getFont() {
+        return font;
+    }
+
+    public int getHighScore() {
+        return highScore;
+    }
+
+    public void setHighScore(int highScore) {
+        this.highScore = highScore;
+    }
 }
