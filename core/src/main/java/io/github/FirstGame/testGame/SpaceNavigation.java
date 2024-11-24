@@ -38,7 +38,7 @@ public class SpaceNavigation extends Game {
         FreeTypeFontParameter parametro = new FreeTypeFontParameter();
         parametro.size = 15;
         font = generator.generateFont(parametro);
-        Screen ss = new PantallaMenu(this); // Usa "this" ya que la clase sigue siendo un Game.
+        Screen ss = new PantallaMenu(SpaceNavigation.getInstance()); // Usa "this" ya que la clase sigue siendo un Game.
         this.setScreen(ss);
     }
 
