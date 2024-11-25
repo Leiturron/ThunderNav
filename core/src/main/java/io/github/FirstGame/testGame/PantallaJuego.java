@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
 public class PantallaJuego implements Screen {
-	
+
     private SpaceNavigation game;
     private OrthographicCamera camera;    
     private SpriteBatch batch;
@@ -30,8 +30,6 @@ public class PantallaJuego implements Screen {
     private float tiempoUltimoPowerUp = 0; // Tiempo desde el último power-up
     private final float intervaloPowerUp = 10f; // Intervalo en segundos
 
-
-    
     private Texture gameFondo;
     
     private Nave4 nave;
@@ -39,7 +37,6 @@ public class PantallaJuego implements Screen {
     private ArrayList<Bullet> balas = new ArrayList<>();
     private ArrayList<Bullet> balasEnemy = new ArrayList<>();
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
-
 
     // Matriz de enemigos
     private MatrizBall2 asteroides;
@@ -51,8 +48,6 @@ public class PantallaJuego implements Screen {
         this.velXAsteroides = velXAsteroides;
         this.cantAsteroides = cantAsteroides;
         defaultStrategy = new SimpleShootingStrategy();
-        
-        
         
         batch = game.getBatch();
         camera = new OrthographicCamera();    
@@ -76,23 +71,19 @@ public class PantallaJuego implements Screen {
         nave.setShootingStrategy(defaultStrategy);
         
         crearAsteroides();
-    }  
+    }
 
     private void crearAsteroides() {
-        
-        // Definir tamaño de la matriz
         int columnas = 10; // Número de columnas
         int filas = 3; // Número de filas
         int espacioEntreBolas = 20; // Espacio entre las bolas
         int size = 50; // Tamaño de las bolas
         
-        //Crear un objeto de MatirzBall2
         asteroides = new MatrizBall2(filas, columnas, espacioEntreBolas, size);
         
         int velocidadConstante = velXAsteroides; // Velocidad constante para todas las bolas
         
         asteroides.CrearEnemigos(enemies, velocidadConstante);
-        
     }
 
     public void dibujaEncabezado() {
@@ -121,9 +112,6 @@ public class PantallaJuego implements Screen {
         if (powerUpActive) {
             if (powerUpDuration > 0) {
                 powerUpDuration--;
-                // Debug log
-                if (powerUpDuration % 60 == 0) { // Cada segundo
-                }
             } else {
                 nave.setShootingStrategy(defaultStrategy);
                 powerUpActive = false;
@@ -138,7 +126,7 @@ public class PantallaJuego implements Screen {
         }
 
         if (!nave.estaHerido()) {
-        	asteroides.initEnemy(this);
+            asteroides.initEnemy(this);
             nave.init(this);
             checkColisionMiBalaConEnemy();
             checkColisionEnemyBalaConNave();
@@ -149,6 +137,13 @@ public class PantallaJuego implements Screen {
         
         drawEnemyAndCheckColision();
         
+        // Aquí invocamos el método `action()` para la nave
+        nave.action(batch, this);
+
+        // Aquí invocamos el método `action()` para cada enemigo
+        for (Enemy enemy : enemies) {
+            enemy.action(batch, this);
+        }
         
         if (nave.estaDestruido()) {
             callGameOver();
@@ -161,13 +156,13 @@ public class PantallaJuego implements Screen {
             nextLevel();
         }
     }
-    
+
     public boolean agregarBala(Bullet bb) {
         return balas.add(bb);
     }
     
     public boolean agregarBalaEnemy(Bullet bb) {
-    	return balasEnemy.add(bb);
+        return balasEnemy.add(bb);
     }
 
     @Override
@@ -197,7 +192,7 @@ public class PantallaJuego implements Screen {
         }
         prefs.flush(); // Guarda los cambios
     }
-    
+
     public void checkColisionMiBalaConEnemy() {
         for (int i = 0; i < balas.size(); i++) {
             Bullet b = balas.get(i);
@@ -219,22 +214,22 @@ public class PantallaJuego implements Screen {
             }
         }
     }
-    
+
     public void checkColisionEnemyBalaConNave() {
-    	for (int i = 0; i < balasEnemy.size(); i++) {
-        	Bullet b = balasEnemy.get(i);
-        	b.update2();
-        	b.checkCollision(nave);
-        	nave.checkCollision(b);
-        	if (b.isDestroyed()) {
+        for (int i = 0; i < balasEnemy.size(); i++) {
+            Bullet b = balasEnemy.get(i);
+            b.update2();
+            b.checkCollision(nave);
+            nave.checkCollision(b);
+            if (b.isDestroyed()) {
                 balasEnemy.remove(i);
                 i--; // Para no saltarse uno tras eliminar del ArrayList
             }
         }
     }
-    
+
     public void drawBalas() {
-    	// Dibujar balas
+        // Dibujar balas
         for (Bullet b : balas) {       
             b.draw(batch);
         }
@@ -244,34 +239,32 @@ public class PantallaJuego implements Screen {
             b.draw2(batch);
         }
     }
-    
+
     public void drawNave() {
-    	nave.draw(batch, this);
+        nave.draw(batch, this);
     }
-    
+
     public void drawEnemyAndCheckColision() {
-    	// Dibujar enemigos y manejar colisión con nave
+        // Dibujar enemigos y manejar colisión con nave
         for (int fila = 0; fila < asteroides.getFila(); fila++) {
             for (int col = 0; col < asteroides.getColumna(); col++) {
                 if (asteroides.getElement(fila, col) != null) {
-                    asteroides.getElement(fila, col).draw(batch, this); // Cambié aquí para usar el nuevo método draw
-                    // Perdió vida o game over
+                    asteroides.getElement(fila, col).draw(batch, this);
                     if (nave.checkCollision(asteroides.getElement(fila, col))) {
-                        // Enemigo se destruye con el choque             
                         enemies.remove(asteroides.getElement(fila, col));
-                        asteroides.delete(fila, col);; // Marcar como destruido
+                        asteroides.delete(fila, col);
                     }   
                 }
             }
         }
     }
-    
+
     public void drawPowerUps(SpriteBatch batch) {
         for (PowerUp powerUp : powerUps) {
             batch.draw(powerUp.getTexture(), powerUp.getX(), powerUp.getY(), 32, 32); // Dibuja el power-up
         }
     }
-    
+
     public void generarPowerUps() {
         PowerUp powerUp = new PowerUp(
             MathUtils.random(20, 700 - 25),
@@ -282,11 +275,11 @@ public class PantallaJuego implements Screen {
         );
         powerUps.add(powerUp);
     }
-    
+
     public void updatePowerUps() {
         for (int i = 0; i < powerUps.size(); i++) {
             PowerUp powerUp = powerUps.get(i);
-            powerUp.update(); // Mueve el power-up hacia abajo
+            powerUp.update();
 
             if (powerUp.isOutOfScreen()) {
                 powerUps.remove(i); // Eliminar si sale de la pantalla
@@ -308,18 +301,18 @@ public class PantallaJuego implements Screen {
             }
         }
     }
-    
+
     public void callGameOver() {
-    	if (score > SpaceNavigation.getInstance().getHighScore())
+        if (score > SpaceNavigation.getInstance().getHighScore())
             SpaceNavigation.getInstance().setHighScore(score);
         Screen ss = new PantallaGameOver(SpaceNavigation.getInstance());
         ss.resize(1200, 800);
         SpaceNavigation.getInstance().setScreen(ss);
         dispose();
     }
-    
+
     public void nextLevel() {
-    	Screen ss = new PantallaJuego(SpaceNavigation.getInstance(), ronda + 1, nave.getVidas(), score, 
+        Screen ss = new PantallaJuego(SpaceNavigation.getInstance(), ronda + 1, nave.getVidas(), score, 
                 velXAsteroides + 3, cantAsteroides + 10);
         ss.resize(1200, 800);
         SpaceNavigation.getInstance().setScreen(ss);
@@ -363,9 +356,9 @@ public class PantallaJuego implements Screen {
         
         gameMusic.play();
     }
-    
-	@Override
-	public void hide() {}
+
+    @Override
+    public void hide() {}
 
     @Override
     public void dispose() {
@@ -373,4 +366,5 @@ public class PantallaJuego implements Screen {
         this.gameMusic.dispose();
     }
 }
+
 
