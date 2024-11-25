@@ -10,6 +10,11 @@ public abstract class SpaceObject{
         this.x = x;
         this.y = y;
     }
+    
+    public void action(SpriteBatch batch, PantallaJuego juego) {
+    	  draw(batch, juego); 
+          move(); 
+    }
 
     public abstract void draw(SpriteBatch batch, PantallaJuego juego); // Método abstracto para dibujar el objeto
     public abstract void move(); // Método abstracto para mover el objeto
