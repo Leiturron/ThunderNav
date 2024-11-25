@@ -274,7 +274,7 @@ public class PantallaJuego implements Screen {
     
     public void generarPowerUps() {
         PowerUp powerUp = new PowerUp(
-            MathUtils.random(50, 750),
+            MathUtils.random(20, 700 - 25),
             MathUtils.random(300, 600),
             new Texture(Gdx.files.internal("powerup.png")),
             new MultiShootingStrategy(),
