@@ -19,7 +19,17 @@ public class Nave4Builder {
     	return this;
     }
     
-    public Nave4Builder setSpeed(float speed) {
+    public Nave4Builder setX(float x) {
+		this.x = x;
+		return this;
+	}
+
+	public Nave4Builder setY(float y) {
+		this.y = y;
+		return this;
+	}
+
+	public Nave4Builder setSpeed(float speed) {
     	this.speed = speed;
     	return this;
     }

@@ -45,7 +45,7 @@ public class MatrizBall2 {
 		this.sizeElement = sizeElement;
 	}
 
-	public int getSetEspacio() {
+	public int getEspacio() {
 		return espacio;
 	}
 
