@@ -141,24 +141,13 @@ public class PantallaJuego implements Screen {
         }
 
         if (!nave.estaHerido()) {
-            asteroides.initEnemy(this);
-            nave.init(this);
-            checkColisionMiBalaConEnemy();
-            checkColisionEnemyBalaConNave();
+            init();
         }
         
         drawBalas();
         drawNave();
         
         drawEnemyAndCheckColision();
-        
-        // Aquí invocamos el método `action()` para la nave
-        nave.action(batch, this);
-
-        // Aquí invocamos el método `action()` para cada enemigo
-        for (Enemy enemy : enemies) {
-            enemy.action(batch, this);
-        }
         
         if (nave.estaDestruido()) {
             callGameOver();
@@ -315,6 +304,13 @@ public class PantallaJuego implements Screen {
                 break;
             }
         }
+    }
+    
+    public void init() {
+    	asteroides.initEnemy(this);
+        nave.init(this);
+        checkColisionMiBalaConEnemy();
+        checkColisionEnemyBalaConNave();
     }
 
     public void callGameOver() {
