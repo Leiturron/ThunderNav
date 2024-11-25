@@ -47,7 +47,6 @@ public class Ball2 extends Enemy implements Shootable{
 		if (y + spr.getWidth() >= 780) {
             Bullet bala = new Bullet(x + 20, y, 0, (int)speed + 3, txBalaEnemy);
             juego.agregarBalaEnemy(bala);
-            System.out.println("enemy");
         }
 	}
 }

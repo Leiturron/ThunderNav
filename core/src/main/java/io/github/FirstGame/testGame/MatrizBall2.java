@@ -60,7 +60,7 @@ public class MatrizBall2 {
 		// Crear enemigos en matriz
         for (int row = 0; row < fila; row++) {
             for (int col = 0; col < columna; col++) {
-                float x = col * (sizeElement + espacio); // Espaciado horizontal
+                float x = col * (sizeElement + espacio) + 10; // Espaciado horizontal
                 float y = Gdx.graphics.getHeight() - (row * (sizeElement + espacio)) - sizeElement - 20; // Espaciado vertical
                 miMatriz[row][col] = new Ball2(x, y, vel, new Texture(Gdx.files.internal("alienShip_1.png")));
                 enemies.add(miMatriz[row][col]); // También agregar a balls1 para la lógica de colisión

@@ -123,10 +123,8 @@ public class PantallaJuego implements Screen {
                 powerUpDuration--;
                 // Debug log
                 if (powerUpDuration % 60 == 0) { // Cada segundo
-                    System.out.println("PowerUp duration: " + powerUpDuration);
                 }
             } else {
-                System.out.println("PowerUp expired");
                 nave.setShootingStrategy(defaultStrategy);
                 powerUpActive = false;
             }
@@ -275,7 +273,6 @@ public class PantallaJuego implements Screen {
     }
     
     public void generarPowerUps() {
-        System.out.println("Generating PowerUp");
         PowerUp powerUp = new PowerUp(
             MathUtils.random(50, 750),
             MathUtils.random(300, 600),
@@ -303,7 +300,6 @@ public class PantallaJuego implements Screen {
             PowerUp powerUp = powerUps.get(i);
             
             if (nave.getArea().overlaps(powerUp.getArea())) {
-                System.out.println("PowerUp collected!");
                 powerUp.apply(nave);
                 powerUps.remove(i);
                 powerUpDuration = 300;
