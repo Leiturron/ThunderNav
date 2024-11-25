@@ -1,5 +1,6 @@
-package io.github.FirstGame.testGame;
+package Interface;
 
+import Screens.PantallaJuego;
 
 public interface Shootable {
     public void shoot(PantallaJuego juego); // Método para realizar disparos

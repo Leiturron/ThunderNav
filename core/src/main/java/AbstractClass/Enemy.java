@@ -1,9 +1,11 @@
-package io.github.FirstGame.testGame;
+package AbstractClass;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+
+import Screens.PantallaJuego;
 
 public abstract class Enemy extends SpaceObject{
     protected Sprite spr;

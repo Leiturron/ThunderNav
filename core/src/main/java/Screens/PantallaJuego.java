@@ -1,4 +1,4 @@
-package io.github.FirstGame.testGame;
+package Screens;
 
 import java.util.ArrayList;
 
@@ -12,6 +12,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+
+import AbstractClass.Enemy;
+import Builders.Nave4Builder;
+import Class.Ball2;
+import Class.Bullet;
+import Class.MatrizBall2;
+import Class.Nave4;
+import Class.PowerUp;
+import Strategy.MultiShootingStrategy;
+import Strategy.ShootingStrategy;
+import Strategy.SimpleShootingStrategy;
+import io.github.FirstGame.testGame.SpaceNavigation;
 
 public class PantallaJuego implements Screen {
 
@@ -62,11 +74,14 @@ public class PantallaJuego implements Screen {
         gameMusic.setVolume(0.5f);
         gameMusic.play();
         
-        nave = new Nave4(740/2 - 50, 30,
-                new Texture(Gdx.files.internal("playerShip_1.png")),
-                Gdx.audio.newSound(Gdx.files.internal("hurt.ogg")), 
-                new Texture(Gdx.files.internal("Rocket2.png")), 
-                Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3"))); 
+        nave = new Nave4Builder()
+        		.setCoordenada(740/2 - 50, 30)
+        		.setTexturaNave(new Texture(Gdx.files.internal("playerShip_1.png")))
+        		.setTexturaBala(new Texture(Gdx.files.internal("Rocket2.png")))
+        		.setSonidoHerir(Gdx.audio.newSound(Gdx.files.internal("hurt.ogg")))
+        		.setSonidoBala(Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3")))
+        		.build();
+        
         nave.setVidas(vidas);
         nave.setShootingStrategy(defaultStrategy);
         

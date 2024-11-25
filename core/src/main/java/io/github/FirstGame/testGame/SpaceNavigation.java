@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
+import Screens.PantallaMenu;
+
 public class SpaceNavigation extends Game {
 
     // Instancia única para el patrón Singleton.

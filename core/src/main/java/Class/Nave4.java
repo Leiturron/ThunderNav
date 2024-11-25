@@ -1,4 +1,4 @@
-package io.github.FirstGame.testGame;
+package Class;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -8,6 +8,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+
+import AbstractClass.SpaceObject;
+import Builders.Nave4Builder;
+import Gestiones.GestionBullet;
+import Gestiones.GestionMoviment;
+import Interface.Shootable;
+import Screens.PantallaJuego;
+import Strategy.ShootingStrategy;
+import Strategy.SimpleShootingStrategy;
 
 public class Nave4 extends SpaceObject implements Shootable{
 
@@ -23,12 +32,12 @@ public class Nave4 extends SpaceObject implements Shootable{
     private int tiempoHerido;
     private ShootingStrategy shootingStrategy;
 
-    public Nave4(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala) {
-    	super(x, y);
-        sonidoHerido = soundChoque;
-        this.soundBala = soundBala;
-        this.txBala = txBala;
-        spr = new Sprite(tx);
+    public Nave4(Nave4Builder builder) {
+    	super(builder.getX(), builder.getY());
+        sonidoHerido = builder.getSonidoHerido();
+        this.soundBala = builder.getSoundBala();
+        this.txBala = builder.getTxBala();
+        spr = new Sprite(builder.getTextureNave());
         spr.setPosition(x, y);
         spr.setBounds(x, y, 45, 45);
         this.shootingStrategy = new SimpleShootingStrategy();

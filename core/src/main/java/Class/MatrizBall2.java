@@ -1,9 +1,14 @@
-package io.github.FirstGame.testGame;
+package Class;
 
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+
+import AbstractClass.Enemy;
+import Gestiones.GestionBullet;
+import Gestiones.GestionMoviment;
+import Screens.PantallaJuego;
 
 public class MatrizBall2 {
 	private Ball2[][] miMatriz;

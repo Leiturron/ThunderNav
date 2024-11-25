@@ -1,7 +1,9 @@
-package io.github.FirstGame.testGame;
+package Class;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+
+import Strategy.ShootingStrategy;
 
 public class PowerUp {
     private float x, y;

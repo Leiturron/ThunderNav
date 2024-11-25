@@ -1,4 +1,4 @@
-package io.github.FirstGame.testGame;
+package Class;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,7 +22,7 @@ public class Bullet {
     }
     public void update() {
         spr.setPosition(spr.getX()+xSpeed, spr.getY()+ySpeed);
-        if (spr.getX() < 0 || spr.getX()+spr.getWidth() > 700) {
+        if (spr.getX() < 20 || spr.getX()+spr.getWidth() > 700) {
             destroyed = true;
         }
         if (spr.getY() < 0 || spr.getY()+spr.getHeight() > 780) {

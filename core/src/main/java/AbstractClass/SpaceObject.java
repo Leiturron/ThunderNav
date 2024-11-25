@@ -1,6 +1,8 @@
-package io.github.FirstGame.testGame;
+package AbstractClass;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import Screens.PantallaJuego;
 
 public abstract class SpaceObject{
     protected float x, y; // Posición
@@ -12,8 +14,8 @@ public abstract class SpaceObject{
     }
     
     public void action(SpriteBatch batch, PantallaJuego juego) {
-    	  draw(batch, juego); 
-          move(); 
+    	  
+
     }
 
     public abstract void draw(SpriteBatch batch, PantallaJuego juego); // Método abstracto para dibujar el objeto

@@ -1,6 +1,9 @@
-package io.github.FirstGame.testGame;
+package Strategy;
 
 import com.badlogic.gdx.graphics.Texture;
+
+import Class.Bullet;
+import Screens.PantallaJuego;
 
 public class MultiShootingStrategy implements ShootingStrategy {
     @Override

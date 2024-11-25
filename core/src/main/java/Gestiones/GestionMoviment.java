@@ -1,4 +1,6 @@
-package io.github.FirstGame.testGame;
+package Gestiones;
+
+import AbstractClass.SpaceObject;
 
 public interface GestionMoviment {
 	public static void initMoviment(SpaceObject obj) {

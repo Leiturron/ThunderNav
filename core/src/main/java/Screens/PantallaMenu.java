@@ -1,4 +1,4 @@
-package io.github.FirstGame.testGame;
+package Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import io.github.FirstGame.testGame.SpaceNavigation;
 
 public class PantallaMenu implements Screen {
 
