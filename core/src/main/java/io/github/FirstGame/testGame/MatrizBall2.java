@@ -80,4 +80,16 @@ public class MatrizBall2 {
 		miMatriz[fila][columna] = enemy;
 	}
 	
+	public void initEnemy(PantallaJuego game) {
+    	// Actualizar movimiento de enemigos dentro del área
+        for (int row = 0; row < fila; row++) {
+            for (int col = 0; col < columna; col++) {
+                if (miMatriz[row][col] != null) {
+                    GestionMoviment.initMoviment(miMatriz[row][col]);
+                    GestionBullet.initBullet(miMatriz[row][col], game);
+                }
+            }
+        }
+    }
+	
 }

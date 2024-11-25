@@ -22,8 +22,6 @@ public abstract class Enemy extends SpaceObject{
         spr.setPosition(x, y);
     }
 
-    public abstract void update(PantallaJuego juego); // Método abstracto que debe ser implementado en las subclases
-
     public Rectangle getArea() {
         return spr.getBoundingRectangle();
     }
@@ -34,9 +32,7 @@ public abstract class Enemy extends SpaceObject{
     }
 
     @Override
-    public void move() {
-        // Método vacío ya que la lógica de movimiento puede variar entre enemigos
-    }
+    public abstract void move();
 
     public float getX() {
         return x;

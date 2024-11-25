@@ -2,6 +2,7 @@ package io.github.FirstGame.testGame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -32,12 +33,14 @@ public class Nave4 extends SpaceObject implements Shootable{
         spr.setPosition(x, y);
         spr.setBounds(x, y, 45, 45);
     }
+    
+    public void init(PantallaJuego game) {
+    	GestionMoviment.initMoviment(this);
+        GestionBullet.initBullet(this, game);
+    }
 
     public void draw(SpriteBatch batch, PantallaJuego juego) {
         if (!herido) {
-            // Manejo del movimiento con teclado
-            move();
-
             // Asegúrate de que la nave se mantenga dentro de los bordes de la pantalla
             if (spr.getX() < 20) {
                 spr.setX(20); // Límite izquierdo
@@ -53,9 +56,6 @@ public class Nave4 extends SpaceObject implements Shootable{
             tiempoHerido--;
             if (tiempoHerido <= 0) herido = false;
         }
-
-        // Lógica de disparo
-        shoot(juego);
     }
 
     // Método para manejar el movimiento con teclado
@@ -77,6 +77,7 @@ public class Nave4 extends SpaceObject implements Shootable{
             Bullet bala = new Bullet(spr.getX() + spr.getWidth() / 2 - 5, spr.getY() + spr.getHeight() - 5, 0, 3, txBala);
             juego.agregarBala(bala);
             soundBala.play();
+            System.out.println("nave");
         }
     }
 

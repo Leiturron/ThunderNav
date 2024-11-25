@@ -98,9 +98,9 @@ public class PantallaJuego implements Screen {
         batch.draw(gameFondo, 0, 0, 1200, 800);
         dibujaEncabezado();
         
-        
         if (!nave.estaHerido()) {
-            actualizarMovEnemy();
+        	asteroides.initEnemy(this);
+            nave.init(this);
             checkColisionMiBalaConEnemy();
             checkColisionEnemyBalaConNave();
         }
@@ -157,17 +157,6 @@ public class PantallaJuego implements Screen {
             prefs.putFloat("asteroide_" + i + "_velX", asteroide.getXSpeed());
         }
         prefs.flush(); // Guarda los cambios
-    }
-    
-    public void actualizarMovEnemy() {
-    	// Actualizar movimiento de enemigos dentro del área
-        for (int fila = 0; fila < asteroides.getFila(); fila++) {
-            for (int col = 0; col < asteroides.getColumna(); col++) {
-                if (asteroides.getElement(fila, col) != null) {
-                    asteroides.getElement(fila, col).update(this);
-                }
-            }
-        }
     }
     
     public void checkColisionMiBalaConEnemy() {
