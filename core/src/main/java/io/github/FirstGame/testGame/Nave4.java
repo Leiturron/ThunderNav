@@ -23,6 +23,7 @@ public class Nave4 extends SpaceObject implements Shootable{
     private boolean herido = false;
     private int tiempoHeridoMax = 50;
     private int tiempoHerido;
+    private ShootingStrategy shootingStrategy;
 
     public Nave4(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala) {
     	super(x, y);
@@ -32,6 +33,7 @@ public class Nave4 extends SpaceObject implements Shootable{
         spr = new Sprite(tx);
         spr.setPosition(x, y);
         spr.setBounds(x, y, 45, 45);
+        this.shootingStrategy = new SimpleShootingStrategy();
     }
     
     public void init(PantallaJuego game) {
@@ -72,14 +74,16 @@ public class Nave4 extends SpaceObject implements Shootable{
 
     // Método para disparar
     @Override
-    public void shoot(PantallaJuego juego) { // Asegúrate de que la firma coincida
+    public void shoot(PantallaJuego juego) { 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            Bullet bala = new Bullet(spr.getX() + spr.getWidth() / 2 - 5, spr.getY() + spr.getHeight() - 5, 0, 3, txBala);
-            juego.agregarBala(bala);
+            // Delegar el disparo a la estrategia actual
+            shootingStrategy.shoot(juego, spr.getX() + spr.getWidth() / 2 - 5, spr.getY() + spr.getHeight() - 5, txBala);
+
+            // Reproducir sonido de disparo
             soundBala.play();
-            System.out.println("nave");
         }
     }
+
 
     public boolean checkCollision(Ball2 b) {
         if (!herido && b.getArea().overlaps(spr.getBoundingRectangle())) {
@@ -138,5 +142,10 @@ public class Nave4 extends SpaceObject implements Shootable{
     public Rectangle getArea() {
         return spr.getBoundingRectangle();
     }
+    
+    public void setShootingStrategy(ShootingStrategy strategy) {
+        this.shootingStrategy = strategy; // Cambiar la estrategia actual
+    }
+    
 }
 

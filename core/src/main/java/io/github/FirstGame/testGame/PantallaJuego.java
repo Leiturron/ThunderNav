@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 
 public class PantallaJuego implements Screen {
 	
@@ -23,6 +24,13 @@ public class PantallaJuego implements Screen {
     private int ronda;
     private int velXAsteroides; 
     private int cantAsteroides;
+    private boolean powerUpActive = false;
+    private int powerUpDuration = 300;
+    private ShootingStrategy defaultStrategy;
+    private float tiempoUltimoPowerUp = 0; // Tiempo desde el último power-up
+    private final float intervaloPowerUp = 10f; // Intervalo en segundos
+
+
     
     private Texture gameFondo;
     
@@ -30,6 +38,8 @@ public class PantallaJuego implements Screen {
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Bullet> balas = new ArrayList<>();
     private ArrayList<Bullet> balasEnemy = new ArrayList<>();
+    private ArrayList<PowerUp> powerUps = new ArrayList<>();
+
 
     // Matriz de enemigos
     private MatrizBall2 asteroides;
@@ -40,6 +50,7 @@ public class PantallaJuego implements Screen {
         this.score = score;
         this.velXAsteroides = velXAsteroides;
         this.cantAsteroides = cantAsteroides;
+        defaultStrategy = new SimpleShootingStrategy();
         
         
         
@@ -62,6 +73,7 @@ public class PantallaJuego implements Screen {
                 new Texture(Gdx.files.internal("Rocket2.png")), 
                 Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3"))); 
         nave.setVidas(vidas);
+        nave.setShootingStrategy(defaultStrategy);
         
         crearAsteroides();
     }  
@@ -98,6 +110,35 @@ public class PantallaJuego implements Screen {
         batch.draw(gameFondo, 0, 0, 1200, 800);
         dibujaEncabezado();
         
+        if (powerUpActive) {
+            game.getFont().draw(batch, "PowerUp: " + powerUpDuration, 50, 750);
+        }
+        
+        drawPowerUps(batch); // Dibujar los power-ups
+        updatePowerUps(); // Actualizar posición de los power-ups
+        checkColisionPowerUp(); // Verificar si la nave recoge algún power-up
+        
+        if (powerUpActive) {
+            if (powerUpDuration > 0) {
+                powerUpDuration--;
+                // Debug log
+                if (powerUpDuration % 60 == 0) { // Cada segundo
+                    System.out.println("PowerUp duration: " + powerUpDuration);
+                }
+            } else {
+                System.out.println("PowerUp expired");
+                nave.setShootingStrategy(defaultStrategy);
+                powerUpActive = false;
+            }
+        }
+        
+        tiempoUltimoPowerUp += delta; // Incrementar el tiempo acumulado
+
+        if (tiempoUltimoPowerUp >= intervaloPowerUp) {
+            generarPowerUps(); // Generar un power-up
+            tiempoUltimoPowerUp = 0; // Reiniciar el temporizador
+        }
+
         if (!nave.estaHerido()) {
         	asteroides.initEnemy(this);
             nave.init(this);
@@ -160,24 +201,23 @@ public class PantallaJuego implements Screen {
     }
     
     public void checkColisionMiBalaConEnemy() {
-    	// Colisiones entre balas y enemigos y su destrucción  
         for (int i = 0; i < balas.size(); i++) {
             Bullet b = balas.get(i);
             b.update();
             for (int fila = 0; fila < asteroides.getFila(); fila++) {
                 for (int col = 0; col < asteroides.getColumna(); col++) {
-                    if (asteroides.getElement(fila, col) != null && b.checkCollision(asteroides.getElement(fila, col))) {          
+                    if (asteroides.getElement(fila, col) != null && b.checkCollision(asteroides.getElement(fila, col))) {
                         explosionSound.play();
                         enemies.remove(asteroides.getElement(fila, col));
                         asteroides.delete(fila, col);
                         score += 10;
-                    } 
+                    }
                 }
             }
-            
+
             if (b.isDestroyed()) {
                 balas.remove(i);
-                i--; // Para no saltarse uno tras eliminar del ArrayList
+                i--; // Ajustar índice tras eliminación
             }
         }
     }
@@ -224,6 +264,51 @@ public class PantallaJuego implements Screen {
                         asteroides.delete(fila, col);; // Marcar como destruido
                     }   
                 }
+            }
+        }
+    }
+    
+    public void drawPowerUps(SpriteBatch batch) {
+        for (PowerUp powerUp : powerUps) {
+            batch.draw(powerUp.getTexture(), powerUp.getX(), powerUp.getY(), 32, 32); // Dibuja el power-up
+        }
+    }
+    
+    public void generarPowerUps() {
+        System.out.println("Generating PowerUp");
+        PowerUp powerUp = new PowerUp(
+            MathUtils.random(50, 750),
+            MathUtils.random(300, 600),
+            new Texture(Gdx.files.internal("powerup.png")),
+            new MultiShootingStrategy(),
+            2.0f
+        );
+        powerUps.add(powerUp);
+    }
+    
+    public void updatePowerUps() {
+        for (int i = 0; i < powerUps.size(); i++) {
+            PowerUp powerUp = powerUps.get(i);
+            powerUp.update(); // Mueve el power-up hacia abajo
+
+            if (powerUp.isOutOfScreen()) {
+                powerUps.remove(i); // Eliminar si sale de la pantalla
+                i--; // Ajustar índice tras la eliminación
+            }
+        }
+    }
+
+    public void checkColisionPowerUp() {
+        for (int i = 0; i < powerUps.size(); i++) {
+            PowerUp powerUp = powerUps.get(i);
+            
+            if (nave.getArea().overlaps(powerUp.getArea())) {
+                System.out.println("PowerUp collected!");
+                powerUp.apply(nave);
+                powerUps.remove(i);
+                powerUpDuration = 300;
+                powerUpActive = true;
+                break;
             }
         }
     }
